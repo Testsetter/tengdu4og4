@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Connections Game&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: Arial, sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.grid {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: repeat(4, 1fr);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-width: 400px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: auto;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.word {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: lightgray;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 5px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.selected {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: yellow;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#message {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Connections Game&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;Select 4 words that are connected. You have 8 tries!&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="grid" id="wordGrid"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p id="message"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="resetGame()"&gt;Reset Game&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const words = [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"Apple", "Banana", "Orange", "Grape", // Group 1: Fruits</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"Dog", "Cat", "Horse", "Rabbit", // Group 2: Animals</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"Red", "Blue", "Green", "Yellow", // Group 3: Colors</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"Car", "Bus", "Bike", "Train" // Group 4: Vehicles</p>
+<p class="p1"><span class="Apple-converted-space">        </span>];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const groups = [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>["Apple", "Banana", "Orange", "Grape"],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>["Dog", "Cat", "Horse", "Rabbit"],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>["Red", "Blue", "Green", "Yellow"],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>["Car", "Bus", "Bike", "Train"]</p>
+<p class="p1"><span class="Apple-converted-space">        </span>];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let selectedWords = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let attempts = 8;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function shuffle(array) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return array.sort(() =&gt; Math.random() - 0.5);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function createGrid() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const grid = document.getElementById("wordGrid");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid.innerHTML = "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>shuffle(words).forEach(word =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let div = document.createElement("div");</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.className = "word";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.textContent = word;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.onclick = () =&gt; selectWord(div);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>grid.appendChild(div);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function selectWord(element) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (selectedWords.includes(element.textContent)) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>element.classList.remove("selected");</p>
+<p class="p1"><span class="Apple-converted-space">                </span>selectedWords = selectedWords.filter(w =&gt; w !== element.textContent);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if (selectedWords.length &lt; 4) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>element.classList.add("selected");</p>
+<p class="p1"><span class="Apple-converted-space">                </span>selectedWords.push(element.textContent);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (selectedWords.length === 4) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>checkSelection();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function checkSelection() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let foundGroup = groups.find(group =&gt;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>group.every(word =&gt; selectedWords.includes(word))</p>
+<p class="p1"><span class="Apple-converted-space">            </span>);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (foundGroup) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById("message").textContent = "Correct!";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>document.querySelectorAll(".selected").forEach(el =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>el.style.backgroundColor = "lightgreen";</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>el.onclick = null;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                </span>groups = groups.filter(group =&gt; group !== foundGroup);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById("message").textContent = "Try again!";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>attempts--;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (attempts === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>document.getElementById("message").textContent = "Game over!";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>selectedWords = [];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.querySelectorAll(".selected").forEach(el =&gt; el.classList.remove("selected"));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function resetGame() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>attempts = 8;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>selectedWords = [];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("message").textContent = "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>createGrid();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>createGrid();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
